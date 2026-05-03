@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <title>Galaxy Countdown</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: black;
+      font-family: Arial;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    #number {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 120px;
+      color: white;
+      text-align: center;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.2); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+  </style>
+</head>
+
+<body>
+
+<canvas id="canvas"></canvas>
+<div id="number">10</div>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+for (let i = 0; i < 150; i++) {
+  particles.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    size: Math.random() * 2,
+    speedX: (Math.random() - 0.5),
+    speedY: (Math.random() - 0.5)
+  });
+}
+
+function drawParticles() {
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = "white";
+
+  particles.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fill();
+
+    p.x += p.speedX;
+    p.y += p.speedY;
+
+    if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+    if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+  });
+
+  requestAnimationFrame(drawParticles);
+}
+
+drawParticles();
+
+// Countdown
+let num = 10;
+const display = document.getElementById("number");
+
+let interval = setInterval(() => {
+  num--;
+  display.innerText = num;
+
+  if (num <= 0) {
+    clearInterval(interval);
+    display.innerText = "✨ I/O ✨";
+  }
+}, 1000);
+
+// Click Explosion Effect
+window.addEventListener("click", () => {
+  for (let i = 0; i < 50; i++) {
+    particles.push({
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+      size: Math.random() * 3,
+      speedX: (Math.random() - 0.5) * 5,
+      speedY: (Math.random() - 0.5) * 5
+    });
+  }
+});
+</script>
+
+</body>
+</html>
